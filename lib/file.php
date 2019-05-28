@@ -9,34 +9,95 @@ function dd($var) {
 Class File {
 
     private $file;
+    private $pathfile;
+    private $file_has_endline;
 
-    function __construct($filepath) {
-        $this->file = fopen($filepath, "c+");
+    function __construct($name, $path) {
+
+        $path = trim($path, "/");
+        $name = trim($name, "/");
+
+        $this->pathfile = "{$path}/{$name}";
+
+        if (!file_exists($path)) {
+            mkdir($path);
+        }
+
+        // Create queue file
+        if (!file_exists($this->pathfile)) {
+            if($handle = fopen($this->pathfile, 'w')) {
+                fclose($handle);
+            };
+        }
+
+        $this->file = fopen($this->pathfile, "a+");
+
+        // Check endline
+        $this->file_has_endline = $this->check_file_endline();
     }
 
-    function add_row() {
-
+    public function check_size() {
+        return filesize($this->pathfile);
     }
 
-    function tail_rows_delete($rows = 1) {
-
-        // Open file
-        $linesToRemove = $this->tail_rows($rows);
-
+    public function check_file_endline() {
         // Set pointer to end
         fseek($this->file, -1, SEEK_END);
 
         // get the last char
         $lastChar = fread($this->file, 1);
 
-        // Set pointer to end
-        fseek($this->file, 0, SEEK_END);
+        if ($this->check_size() == 0) {
+            return true;
+        }
+        else{
+            return ($lastChar == "\n");
+        }
+    }
+
+    public function check_num_rows() {
+
+        // Set pointer to start
+        rewind($this->file);
+
+        $linecount = 0;
+        while(!feof($this->file)) {
+            $line = fgets($this->file, 4096);
+            $linecount += substr_count($line, "\n");
+        }
+
+        return $linecount;
+    }
+
+    public function add_row($data = "", $recheck_endline = false) {
+
+        // Recheck if the file end with endline
+        if ($recheck_endline) {
+            $this->file_has_endline = $this->check_file_endline();
+        }
+
+        // If the file has endline, use this and append another endline for next
+        if ($this->file_has_endline) {
+            $data = "{$data}\n";
+        }
+        // If the file not has endline, append once to start line and end.
+        else{
+            $data = "\n{$data}\n";
+        }
+
+        return fwrite($this->file, $data);
+    }
+
+    public function tail_rows_delete($rows = 1) {
+
+        // Open file
+        $linesToRemove = $this->tail_rows($rows);
 
         // Get size
         $end = ftell($this->file);
 
         // If the last char is \n
-        if ($lastChar == "\n") {
+        if ($this->check_file_endline()) {
             $end -= 2;
         }
 
@@ -91,7 +152,17 @@ Class File {
         return trim($output);
     }
 
-    function close_file() {
+    public function close_file() {
         fclose($this->file);
+    }
+
+    public function delete() {
+        if (file_exists($this->pathfile)) {
+            $this->close_file();
+            return unlink($this->pathfile);
+        }
+        else{
+            return true;
+        }
     }
 }
