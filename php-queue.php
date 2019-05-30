@@ -59,7 +59,7 @@ Class Php_queue {
         $processed = [];
 
         // If have works
-        for ($i=0; $i<=$works; $i++) {
+        for ($i=0; $i<$works; $i++) {
 
             // If the callback is a function
             if (is_callable($callback)) {

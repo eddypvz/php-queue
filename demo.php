@@ -18,7 +18,7 @@ $queue = new Php_queue("queue_test");
 $queue->reset();
 
 // Add to queue
-for ($i = 0; $i < 300; $i++) {
+for ($i = 0; $i < 3; $i++) {
     $arrTMP = [];
     $arrTMP["value_1"] = base64_encode(uniqid("", true));
     $arrTMP["value_2"] = md5(uniqid());
@@ -28,8 +28,8 @@ for ($i = 0; $i < 300; $i++) {
 }
 
 // Process queue
-$process_estatus = $queue->process(5, function($item) {
-    dd($item);
+$process_estatus = $queue->process(1, function($item) {
+    //dd($item);
     return true;
 });
 

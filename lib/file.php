@@ -83,15 +83,16 @@ Class File {
 
     public function tail_rows_delete($rows = 1) {
 
+        // Get size
+        fseek($this->file, 0, SEEK_END);
+        $end = ftell($this->file);
+
         // Open file
         $linesToRemove = $this->tail_rows($rows);
 
-        // Get size
-        $end = ftell($this->file);
-
         // If the last char is \n
         if ($this->check_file_endline()) {
-            $end -= 2;
+            $end -= 1;
         }
 
         // Truncate to size
