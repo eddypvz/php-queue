@@ -28,7 +28,7 @@ for ($i = 0; $i < 3; $i++) {
 }
 
 // Process queue
-$process_estatus = $queue->process(1, function($item) {
+$process_estatus = $queue->process(5, function($item) {
     //dd($item);
     return true;
 });

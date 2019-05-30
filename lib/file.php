@@ -95,11 +95,16 @@ Class File {
             $end -= 1;
         }
 
-        // Truncate to size
-        $truncateTo = $end - strlen($linesToRemove);
+        if ($linesToRemove != "") {
+            // Truncate to size
+            $truncateTo = $end - strlen($linesToRemove);
 
-        // truncate
-        return ftruncate ( $this->file, $truncateTo );
+            // truncate
+            return ftruncate ( $this->file, $truncateTo );
+        }
+        else {
+            return false;
+        }
     }
 
     /**
