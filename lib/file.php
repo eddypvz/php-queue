@@ -1,11 +1,4 @@
 <?php
-
-function dd($var) {
-    print_r("<pre>");
-    print_r($var);
-    print_r("</pre>");
-}
-
 Class File {
 
     private $file;
