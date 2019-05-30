@@ -23,7 +23,7 @@ Class Php_queue {
         $work_dir = dirname(__FILE__);
         $this->name = "{$unique_name}.queue";
         $this->path = "{$work_dir}/{$path}/";
-        $this->file = new File($this->name, $this->path);
+        $this->file = new File($this->name, $this->path) or die("Imposible create queue in {$this->path}");
     }
 
     /**
