@@ -20,7 +20,7 @@ Class Php_queue {
      * @param string $path, Path for locate the file for queue.
      */
     function __construct($unique_name, $path = "_temp") {
-        $work_dir = getcwd();
+        $work_dir = dirname(__FILE__);
         $this->name = "{$unique_name}.queue";
         $this->path = "{$work_dir}/{$path}/";
         $this->file = new File($this->name, $this->path);
