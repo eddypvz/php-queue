@@ -59,32 +59,31 @@ Class Php_queue {
         $processed = [];
 
         // If have works
-        if($worksForProcess = $this->get($works)){
+        for ($i=0; $i<=$works; $i++) {
 
-            // Explode by endline
-            $worksArray = explode("\n", $worksForProcess);
+            // If the callback is a function
+            if (is_callable($callback)) {
 
-            // Each to works, reverse array to get first the last line
-            foreach (array_reverse($worksArray) as $work) {
+                // Get only one row, if the row fail, this try again in all iterations.
+                $work = $this->get(1);
 
-                // If the callback is a function
-                if (is_callable($callback)) {
+                // Decode work
+                if ($work_decode = @json_decode($work)) {
+                    $work = $work_decode;
+                }
 
-                    // Decode work
-                    if ($work_decode = @json_decode($work)) {
-                        $work = $work_decode;
-                    }
+                // Call process callback
+                if ($process_status = call_user_func($callback, $work)) {
+                    $processed["success"][] = $work;
 
-                    // Call process callback
-                    if ($process_status = call_user_func($callback, $work)) {
-                        $processed["success"][] = $work;
-                    }
-                    else {
-                        $processed["fail"][] = $work;
-                    }
+                    // If the process is success, delete row
+                    $this->file->tail_rows_delete(1);
+                }
+                else {
+                    $processed["fail"][] = $work;
                 }
             }
-        };
+        }
 
         return $processed;
     }
