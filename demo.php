@@ -29,6 +29,7 @@ for ($i = 0; $i < 300; $i++) {
 
 // Process queue
 $process_estatus = $queue->process(5, function($item) {
+    dd($item);
     return true;
 });
 

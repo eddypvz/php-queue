@@ -22,7 +22,7 @@ Class Php_queue {
     function __construct($unique_name, $path = "") {
         $work_dir = dirname(__FILE__);
         $this->name = "{$unique_name}.queue";
-        $this->path = $path ?? "{$work_dir}/_temp/";
+        $this->path = ($path !== "") ? $path : "{$work_dir}/_temp/";
         $this->file = new File($this->name, $this->path) or die("Imposible create queue in {$this->path}");
     }
 
@@ -64,8 +64,8 @@ Class Php_queue {
             // Explode by endline
             $worksArray = explode("\n", $worksForProcess);
 
-            // Each to works
-            foreach ($worksArray as $work) {
+            // Each to works, reverse array to get first the last line
+            foreach (array_reverse($worksArray) as $work) {
 
                 // If the callback is a function
                 if (is_callable($callback)) {

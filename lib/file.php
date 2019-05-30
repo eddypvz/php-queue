@@ -12,6 +12,8 @@ Class File {
 
         $this->pathfile = "{$path}/{$name}";
 
+        dd($path);
+
         if (!file_exists($path)) {
             mkdir($path);
         }
