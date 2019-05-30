@@ -19,10 +19,10 @@ Class Php_queue {
      * @param string $unique_name, Unique name for queue.
      * @param string $path, Path for locate the file for queue.
      */
-    function __construct($unique_name, $path = "_temp") {
+    function __construct($unique_name, $path = "") {
         $work_dir = dirname(__FILE__);
         $this->name = "{$unique_name}.queue";
-        $this->path = "{$work_dir}/{$path}/";
+        $this->path = $path ?? "{$work_dir}/_temp/";
         $this->file = new File($this->name, $this->path) or die("Imposible create queue in {$this->path}");
     }
 
