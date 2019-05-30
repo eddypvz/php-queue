@@ -7,13 +7,10 @@ Class File {
 
     function __construct($name, $path) {
 
-        $path = trim($path, "/");
-        $name = trim($name, "/");
-
         $this->pathfile = "{$path}/{$name}";
 
         if (!file_exists($path)) {
-            mkdir($path);
+            mkdir($path, 0775, true);
         }
 
         // Create queue file
@@ -23,7 +20,7 @@ Class File {
             };
         }
 
-        $this->file = fopen($this->pathfile, "a+");
+        $this->file = fopen($this->pathfile, "a+") or die("cannot open file {$this->pathfile}");
 
         // Check endline
         $this->file_has_endline = $this->check_file_endline();
